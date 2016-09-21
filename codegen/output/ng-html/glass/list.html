@@ -1,0 +1,89 @@
+<div ng-controller="glassCtrl">
+<!-- start: PAGE TITLE -->
+<section id="page-title">
+    <div class="row">
+        <div class="col-sm-8">
+            <h1 class="mainTitle" translate="书籍">{{ mainTitle }}</h1>
+            <span class="mainDescription">书籍</span>
+        </div>
+        <div ncy-breadcrumb></div>
+    </div>
+</section>
+<!-- end: PAGE TITLE -->
+
+<!-- start: INLINE EDIT EXAMPLE -->
+<div class="container-fluid container-fullw">
+    <div class="row">
+        <div class="col-md-12">
+            <form role="form" class="form-inline">
+                <div class="form-group">书名：<input type="text"  class="form-control" ng-model="queryMap.name"></div>						    			
+                <div class="form-group">价格：<input type="text"  class="form-control" ng-model="queryMap.price"></div>						    			
+                <div class="form-group">创建时间：<input type="text"  class="form-control" ng-model="queryMap.createDate"></div>						    			
+                <button class="btn btn-primary" type="button" ng-click="query()">查询</button>
+                <button class="btn btn-green" type="button" ng-click="add()">新增</button>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <div>
+                 <div class="table-responsive">
+                    <table ng-table="tableParams" class="table">
+                        <tbody ng-repeat="p in $data">
+                        <tr id="tr{{p.id}}" ng-class-odd="'odd'" ng-class-even="'even'">
+			                <td class="rowTd" data-title="'书名'"  sortable="'name'">{{p.name}}</td>						    			
+			                <td class="rowTd" data-title="'价格'"  sortable="'price'">{{p.price}}</td>						    			
+			                <td class="rowTd" data-title="'创建时间'"  sortable="'createDate'">{{p.createDate}}</td>						    			
+                            <td class="rowTd" >
+                                <div class="pull-right margin-right-10">
+                                <input type=button class="btn btn-primary  btn-sm" id="editRowBtn{{p.id}}" value="编辑"
+                                       ng-click="setEditId(p.id)">
+                                <input type=button class="btn btn-red  btn-sm"  value="删除"
+                                       ng-click="delEditId(p.id)">
+                                 </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pull-right">
+                    <pagination total-items="records" ng-model="queryMap.pageCurrent" max-size="10" class="pagination-sm" boundary-links="true" rotate="false"
+                                items-per-page="queryMap.pageSize" ng-change="pageChanged()" previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"></pagination>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="edit.html">
+    <div class="modal-header">
+        <h3 class="modal-title">编辑</h3>
+    </div>
+    <div class="modal-body">
+        <div class="panel ">
+            <div class="panel-body">
+                <form role="form">
+                    <input type="hidden"  ng-model="glass.id" value="{{glass.id}}">
+                    <div class="form-group">
+                        <label for="name">书名</label>
+                        <input type="text" class="form-control" id="name" ng-model="glass.name" value="{{glass.name}}">
+                    </div>			                						    			
+                    <div class="form-group">
+                        <label for="price">价格</label>
+                        <input type="text" class="form-control" id="price" ng-model="glass.price" value="{{glass.price}}">
+                    </div>			                						    			
+                    <div class="form-group">
+                        <label for="createDate">创建时间</label>
+                        <input type="text" class="form-control" id="createDate" ng-model="glass.createDate" value="{{glass.createDate}}">
+                    </div>			                						    			
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok($event)">确定</button>
+        <button class="btn btn-red" ng-click="cancel($event)">取消</button>
+    </div>
+</script>
+</div>
+<!-- end: INLINE EDIT EXAMPLE -->

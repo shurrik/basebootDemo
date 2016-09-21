@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.shurrik.demo.dao.IGlassDAO">
+
+    <sql id="Base_Column_List">
+      id,
+	  name name,
+	  price price,
+	  create_date createDate
+    </sql>
+    
+    <sql id="Query_condition">
+      <trim prefix="WHERE" prefixOverrides="AND | OR">
+              <if test="condition.name!=null">
+			  	AND name Like '%${condition.name}%'
+			  </if>
+              <if test="condition.price!=null">
+			  	AND price Like '%${condition.price}%'
+			  </if>
+              <if test="condition.createDate!=null">
+			  	AND create_date Like '%${condition.createDate}%'
+			  </if>
+        </trim>
+    </sql>
+    
+    <insert id="insert" parameterType="Glass">
+        INSERT INTO t_wl_glass (
+	        id,
+		    name,
+		    price,
+		    create_date
+        ) VALUES (
+         	#{id},
+       		#{name},
+       		#{price},
+       		sysdate()
+        )
+    </insert>
+
+    <!-- 更新 -->
+   	<update id="update" parameterType="Glass">
+        UPDATE t_wl_glass
+        <trim prefix="SET" suffixOverrides=",">
+                  <if test="name!=null">
+                  name=#{name},
+                  </if>
+                  <if test="price!=null">
+                  price=#{price},
+                  </if>
+        </trim>
+        WHERE
+        id =#{id}
+    </update>
+
+   	<update id="updateMap">
+        UPDATE t_wl_glass
+        <trim prefix="SET" suffixOverrides=",">
+          <if test="map.name!=null">        
+           name=#{map.name},
+          </if>
+          <if test="map.price!=null">        
+           price=#{map.price},
+          </if>
+          <if test="map.createDate!=null">        
+           create_date=sysdate(),
+          </if>
+        </trim>
+        WHERE
+       id = #{ map.id }
+	</update>
+
+
+     <insert id="insertMap" >
+        INSERT INTO t_wl_glass (
+             	id,
+			 	name,
+			 	price,
+			 	create_date,
+        ) VALUES (
+              	#{map.id},
+		    	#{map.name},
+		    	#{map.price},
+		    	sysdate(),
+        )
+    </insert>
+
+
+  	<update id="updateNull" parameterType="Glass">
+        UPDATE t_wl_glass
+        <trim prefix="SET" suffixOverrides=","> 
+			    name=#{name},
+			    price=#{price},
+			    create_date=sysdate(),
+        </trim>
+        WHERE
+        id =#{id}
+    </update>
+
+   	<delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM t_wl_glass
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            AND id=#{id}
+        </trim>
+    </delete>
+
+
+ 	<delete id="deleteByCondition" parameterType="java.util.Map">
+        DELETE FROM  t_wl_glass 
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="map.id!=null">
+                AND id = #{map.id}
+            </if>				        
+			<if test="map.name!=null">
+				AND name = #{map.name}
+			</if>				
+			<if test="map.price!=null">
+				AND price = #{map.price}
+			</if>				
+			<if test="map.createDate!=null">
+				AND create_date = sysdate()
+			</if>				
+        </trim>
+    </delete>
+
+    <delete id="deleteByProperty" parameterType="java.util.Map">
+        DELETE FROM t_wl_glass WHERE
+        ${property}=#{value}
+    </delete>
+
+    <select id="fetch" parameterType="java.lang.Integer" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            AND id =#{id}
+        </trim>
+    </select>
+
+    <select id="findOne" parameterType="java.util.Map" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass WHERE
+        ${property}=#{value} 
+        LIMIT 0,1
+    </select>
+
+    <select id="findList" parameterType="java.util.Map" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass WHERE
+       	${property} =#{value}
+    </select>
+
+    <select id="findAll" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass
+    </select>
+
+    <select id="queryPage" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass
+        <include refid="Query_condition" />    
+        <if test="condition.sort != null">
+			order by ${condition.sort}
+		</if>
+        <if test="offset != null">
+            limit ${offset}, ${rows}
+        </if>
+    </select>
+
+    <select id="like" parameterType="java.util.Map" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="id!=null">
+				AND id like '%#{id}%'
+			</if>
+			<if test="name!=null">
+				AND name Like '%$ {condition.name}%'
+			</if>
+			<if test="price!=null">
+				AND price Like '%$ {condition.price}%'
+			</if>
+			<if test="createDate!=null">
+				AND create_date Like '%$ {condition.createDate}%'
+			</if>
+        </trim>
+    </select>
+
+
+ 	<select id="queryList" parameterType="java.util.Map" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="map.id!=null">
+                AND id = #{map.id}
+            </if>
+			<if test="map.name!=null">
+				AND name = #{map.name}
+			</if>
+			<if test="map.price!=null">
+				AND price = #{map.price}
+			</if>
+			<if test="map.createDate!=null">
+				AND create_date = sysdate()
+			</if>
+        </trim>
+        ORDER BY ${orderBy} ${sortBy}
+    </select>
+
+   	<select id="queryOne" parameterType="java.util.Map" resultType="Glass">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_wl_glass
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="map.id!=null">
+                AND id = #{map.id}
+            </if>
+			<if test="map.name!=null">
+				AND name = #{map.name}
+			</if>
+			<if test="map.price!=null">
+				AND price = #{map.price}
+			</if>
+			<if test="map.createDate!=null">
+				AND create_date = sysdate()
+			</if>
+        </trim>
+        limit 0,1
+    </select>
+
+  	<select id="count" resultType="java.lang.Integer">
+        SELECT count(id) FROM t_wl_glass
+        <include refid="Query_condition" />
+    </select>
+
+	<select id="selectMaxId" resultType="java.lang.Integer">
+	    SELECT
+	    MAX(id)
+	    FROM t_wl_glass
+	</select>
+
+</mapper>
+
